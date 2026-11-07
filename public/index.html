@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Reply Assistant</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn back" id="backBtn" type="button" aria-label="Back to contacts" hidden>‹</button>
+    <h1 id="title">Reply Assistant</h1>
+    <span class="badge" title="Approved messages are only recorded here. Nothing is sent to WhatsApp.">Simulated sending</span>
+    <button class="icon-btn" id="outboxBtn" type="button" aria-label="Sent log">⇪</button>
+    <button class="icon-btn" id="settingsBtn" type="button" aria-label="Settings">⚙</button>
+  </header>
+
+  <div id="statusBar" class="status-bar" role="status" hidden></div>
+
+  <main id="app" class="layout">
+    <section id="listView" class="list-view" aria-label="Contacts">
+      <form id="newContactForm" class="card new-contact">
+        <label for="newName">New contact</label>
+        <div class="row">
+          <input id="newName" name="name" maxlength="100" placeholder="Name, e.g. Sam" autocomplete="off" required>
+          <button class="btn primary" type="submit">Add</button>
+        </div>
+      </form>
+      <ul id="contactList" class="contact-list"></ul>
+      <p id="emptyList" class="muted center" hidden>No contacts yet. Add one above, then paste a message they sent you.</p>
+    </section>
+
+    <section id="chatView" class="chat-view" aria-label="Conversation" hidden>
+      <details class="card notes">
+        <summary>Contact details &amp; notes for the AI</summary>
+        <form id="contactForm">
+          <label for="cName">Name</label>
+          <input id="cName" maxlength="100" required>
+          <label for="cNotes">Notes (who they are, how you talk to them)</label>
+          <textarea id="cNotes" rows="3" maxlength="2000" placeholder="e.g. My cousin. Very casual, we joke a lot. Speaks Dutch."></textarea>
+          <div class="row end">
+            <button class="btn danger ghost" id="deleteContact" type="button">Delete contact</button>
+            <button class="btn" type="submit">Save</button>
+          </div>
+        </form>
+      </details>
+
+      <ol id="thread" class="thread" aria-live="polite"></ol>
+
+      <div id="draftArea"></div>
+
+      <form id="messageForm" class="card composer">
+        <label for="msgText">Add a message to this chat</label>
+        <textarea id="msgText" rows="3" maxlength="4000" placeholder="Paste the message they sent you…" required></textarea>
+        <div class="row">
+          <div class="segmented" role="radiogroup" aria-label="Who wrote it">
+            <label><input type="radio" name="from" value="them" checked> From them</label>
+            <label><input type="radio" name="from" value="me"> From me</label>
+          </div>
+          <button class="btn" type="submit">Add</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <dialog id="confirmDialog" aria-labelledby="confirmTitle">
+    <form method="dialog">
+      <h2 id="confirmTitle">Send this reply?</h2>
+      <p class="muted" id="confirmTo"></p>
+      <blockquote id="confirmText" class="preview"></blockquote>
+      <p class="notice">Simulated: it will be saved to your sent log only. Nothing is sent to WhatsApp.</p>
+      <div class="row end">
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button class="btn primary" value="send" id="confirmSend">Approve &amp; send</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" aria-labelledby="settingsTitle">
+    <form id="settingsForm" method="dialog">
+      <h2 id="settingsTitle">Settings</h2>
+      <label for="sName">Your name</label>
+      <input id="sName" maxlength="100" autocomplete="name">
+      <label for="sStyle">Your writing style</label>
+      <textarea id="sStyle" rows="3" maxlength="1000"></textarea>
+      <h3>Claude connection</h3>
+      <p id="authInfo" class="muted">Checking…</p>
+      <div class="row end">
+        <button class="btn ghost" type="button" id="recheckAuth">Check again</button>
+        <button class="btn ghost" value="cancel" formnovalidate>Close</button>
+        <button class="btn primary" value="save">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="outboxDialog" aria-labelledby="outboxTitle">
+    <form method="dialog">
+      <h2 id="outboxTitle">Sent log (simulated)</h2>
+      <ul id="outboxList" class="outbox"></ul>
+      <div class="row end"><button class="btn">Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="loginDialog" aria-labelledby="loginTitle">
+    <form id="loginForm" method="dialog">
+      <h2 id="loginTitle">Access password</h2>
+      <p class="muted">Enter the ACCESS_PASSWORD you set on your computer.</p>
+      <input id="loginPassword" type="password" autocomplete="current-password" required>
+      <div class="row end"><button class="btn primary" value="ok">Unlock</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
